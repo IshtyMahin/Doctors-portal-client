@@ -6,6 +6,7 @@ import ContactUs from "./Pages/Contact Us/ContactUs";
 import Home from "./Pages/Home/Home";
 import Login from "./Pages/Login/Login";
 import Reviews from "./Pages/Reviews/Reviews";
+import Footer from "./Pages/Shared/Footer";
 import Navbar from "./Pages/Shared/Navbar";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="reviews" element={<Reviews />}></Route>
         <Route path="contact" element={<ContactUs />}></Route>
       </Routes>
+      <Footer></Footer>
     </div>
   );
 }
