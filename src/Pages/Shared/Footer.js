@@ -6,10 +6,11 @@ const Footer = () => {
       style={{
         background: `url(${footer})`,
         backgroundSize: "cover",
+    
       }}
       className="p-16 "
     >
-      <div className="footer ml-24">
+      <div className="footer ">
         <div>
           <span className="footer-title">Services</span>
           <a className="link link-hover">Branding</a>
