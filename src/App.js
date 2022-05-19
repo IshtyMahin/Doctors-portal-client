@@ -5,10 +5,19 @@ import Appointment from "./Pages/Appointmet/Appointment";
 import ContactUs from "./Pages/Contact Us/ContactUs";
 import Home from "./Pages/Home/Home";
 import Login from "./Pages/Login/Login";
+import RequireAuth from "./Pages/Login/RequireAuth";
+import SignUp from "./Pages/Login/SignUp";
 import Reviews from "./Pages/Reviews/Reviews";
-import Footer from "./Pages/Shared/Footer";
-import Navbar from "./Pages/Shared/Navbar";
 
+import Navbar from "./Pages/Shared/Navbar";
+import { ToastContainer } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
+import Dashboard from "./Pages/Dashboard/Dashboard";
+import MyAppointments from "./Pages/Dashboard/MyAppointments";
+import MyReview from "./Pages/Dashboard/MyReview";
+import MyHistory from "./Pages/Dashboard/MyHistory";
+import Users from "./Pages/Dashboard/Users";
+import RequireAdmin from "./Pages/Login/RequireAdmin";
 function App() {
   return (
     <div className="App">
@@ -17,11 +26,28 @@ function App() {
         <Route path="/" element={<Home />}></Route>
         <Route path="about" element={<About />}></Route>
         <Route path="login" element={<Login />}></Route>
-        <Route path="Appointment" element={<Appointment />}></Route>
+        <Route path="signup" element={<SignUp />}></Route>
+        <Route path="appointment" element={
+          <RequireAuth>
+            <Appointment />
+          </RequireAuth>
+        }></Route>
+        <Route path="dashboard" element={
+          <RequireAuth>
+            <Dashboard />
+          </RequireAuth>
+        }> 
+           <Route index element={<MyAppointments></MyAppointments>}></Route>
+           <Route path="review" element={<MyReview></MyReview>}></Route>
+           <Route path="history" element={<MyHistory></MyHistory>}></Route>
+           <Route path="users" element={<RequireAdmin>
+            <Users></Users>
+           </RequireAdmin>}></Route>
+        </Route>
         <Route path="reviews" element={<Reviews />}></Route>
         <Route path="contact" element={<ContactUs />}></Route>
       </Routes>
-   
+       <ToastContainer></ToastContainer>
     </div>
   );
 }

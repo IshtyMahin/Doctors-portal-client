@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import auth from "../../firebase.init";
 import {
-  useSignInWithEmailAndPassword,
+  useCreateUserWithEmailAndPassword,
   useSignInWithGoogle,
+  useUpdateProfile,
 } from "react-firebase-hooks/auth";
 import { useForm } from "react-hook-form";
 import Loading from "../Shared/Loading";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useToken from "../../hooks/useToken";
-const Login = () => {
+const SignUp = () => {
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
   const {
     register,
@@ -16,28 +17,23 @@ const Login = () => {
     handleSubmit,
   } = useForm();
 
-  const [signInWithEmailAndPassword, user, loading, error] =
-    useSignInWithEmailAndPassword(auth);
-  
-  const [token] = useToken(user|| gUser)
+  const [createUserWithEmailAndPassword, user, loading, error] =
+    useCreateUserWithEmailAndPassword(auth);
+
+  const [updateProfile, updating, updateError] = useUpdateProfile(auth);
+
+
+  const [token] = useToken(user||gUser);
+
+  const navigate = useNavigate();
 
   let signInError;
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  let from = location.state?.from?.pathname || "/";
-
-  useEffect(()=>{
-    if (token) {
-        navigate(from, { replace: true });
-      }
-  },[token,from,navigate])
-
-  if (loading || gLoading) {
+  if (loading || gLoading || updating) {
     return <Loading />;
   }
 
-  if (error || gError) {
+  if (error || gError || updateError) {
     signInError = (
       <p className="text-red-500">
         <small>{error?.message || gError?.message}</small>
@@ -45,21 +41,49 @@ const Login = () => {
     );
   }
 
-  
+  if (token) {
+    
+    navigate("/appointment");
+  }
 
-  const onSubmit = (data) => {
-    console.log(data);
-    signInWithEmailAndPassword(data.email, data.password);
+  const onSubmit = async (data) => {
+    await createUserWithEmailAndPassword(data.email, data.password);
+
+    await updateProfile({ displayName: data.name });
+    alert("update profile");
+   
   };
-
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="card w-96 bg-base-100 shadow-xl">
         <div className="card-body">
           <h2 className="text-center text-2xl font-semibold text-primary">
-            Login
+            Sign Up
           </h2>
           <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text">Name</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Your Name"
+                className="input input-bordered w-full max-w-xs"
+                {...register("name", {
+                  required: {
+                    value: true,
+                    message: "Name is Required",
+                  },
+                })}
+              />
+              <label className="label">
+                {errors.name?.type === "required" && (
+                  <span className="label-text-alt text-red-500">
+                    {errors.name.message}
+                  </span>
+                )}
+              </label>
+            </div>
             <div className="form-control w-full max-w-xs">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -128,15 +152,15 @@ const Login = () => {
             <input
               className="btn w-full max-w-xs btn-primary bg-gradient-to-r from-secondary to-primary"
               type="submit"
-              value="Login"
+              value="Sign UP"
             />
           </form>
           <p>
-            New to Doctors Portal ?
+            Already have an account ?
             <small>
               {" "}
-              <Link className="text-primary" to="/signup">
-                Create New Account
+              <Link className="text-primary" to="/login">
+                please Login here
               </Link>
             </small>
           </p>
@@ -153,4 +177,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
