@@ -10,8 +10,4 @@ const Loading = () => {
 
 export default Loading;
 
-{
-  /* <div className='h-screen flex justify-center items-center'>
-<button className="btn loading">loading</button>
-</div> */
-}
+
